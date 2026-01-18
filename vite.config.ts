@@ -16,12 +16,29 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      // Force single React instance to fix "Cannot read properties of null (reading 'useEffect')"
-      "react": path.resolve(__dirname, "node_modules/react"),
+
+      // Force a single React instance across all dependencies
+      react: path.resolve(__dirname, "node_modules/react"),
       "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+      "react/jsx-runtime": path.resolve(
+        __dirname,
+        "node_modules/react/jsx-runtime"
+      ),
+      "react/jsx-dev-runtime": path.resolve(
+        __dirname,
+        "node_modules/react/jsx-dev-runtime"
+      ),
     },
+
+    // Extra guard against duplicate React copies in dep graph
+    dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ["react", "react-dom"],
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+    ],
   },
 }));
