@@ -142,17 +142,17 @@ export default function Auth() {
             transition={{ duration: 0.5 }}
           >
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                <span className="text-white font-bold text-xl">E</span>
+              <div className="w-12 h-12 rounded-[6px] bg-primary-foreground/20 flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-xl">E</span>
               </div>
-              <span className="text-white font-bold text-2xl">EquiFlow</span>
+              <span className="text-primary-foreground font-bold text-2xl">EquiFlow</span>
             </div>
             
-            <h1 className="text-4xl xl:text-5xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
               Your single source of truth for founder equity & finances
             </h1>
             
-            <p className="text-white/80 text-lg mb-8">
+            <p className="text-primary-foreground/80 text-lg mb-8">
               Track equity, expenses, revenue, and capital contributions. 
               Build trust with transparency.
             </p>
@@ -171,8 +171,8 @@ export default function Auth() {
                   transition={{ delay: 0.3 + index * 0.1 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-2 h-2 rounded-full bg-white" />
-                  <span className="text-white/90">{feature}</span>
+                  <div className="w-2 h-2 rounded-full bg-primary-foreground" />
+                  <span className="text-primary-foreground/90">{feature}</span>
                 </motion.div>
               ))}
             </div>
@@ -180,8 +180,8 @@ export default function Auth() {
         </div>
         
         {/* Decorative circles */}
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-white/5" />
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-primary-foreground/5" />
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary-foreground/5" />
       </div>
 
       {/* Right side - Form */}
@@ -194,8 +194,8 @@ export default function Auth() {
         >
           <div className="lg:hidden mb-8 text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-                <span className="text-white font-bold text-lg">E</span>
+              <div className="w-10 h-10 rounded-[6px] gradient-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-lg">E</span>
               </div>
               <span className="font-bold text-xl text-foreground">EquiFlow</span>
             </div>
@@ -283,7 +283,7 @@ export default function Auth() {
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                   {isLogin ? "Signing in..." : "Creating account..."}
                 </span>
               ) : (
