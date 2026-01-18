@@ -13,8 +13,11 @@ import {
   Settings,
   LogOut,
   TrendingUp,
+  Calculator,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
