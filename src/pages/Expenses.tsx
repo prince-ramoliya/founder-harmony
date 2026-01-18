@@ -107,7 +107,7 @@ export default function Expenses() {
               animate={{ opacity: 1, y: 0 }}
               className="text-3xl font-bold text-foreground flex items-center gap-3"
             >
-              <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded bg-warning/10 flex items-center justify-center">
                 <Receipt className="w-5 h-5 text-warning" />
               </div>
               Expense Management
@@ -152,7 +152,7 @@ export default function Expenses() {
                 </div>
                 <div className="space-y-2">
                   <Label>Category</Label>
-                  <select className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground">
+                  <select className="w-full px-3 py-2 rounded border border-input bg-background text-foreground">
                     <option>Technology</option>
                     <option>Marketing</option>
                     <option>Operations</option>
@@ -188,13 +188,11 @@ export default function Expenses() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-card rounded-2xl p-6 shadow-md"
+          <div
+            className="bg-card rounded border p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-destructive/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded bg-destructive/10 flex items-center justify-center">
                 <TrendingDown className="w-7 h-7 text-destructive" />
               </div>
               <div>
@@ -204,16 +202,11 @@ export default function Expenses() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-card rounded-2xl p-6 shadow-md"
-          >
+          <div className="bg-card rounded border p-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded bg-primary/10 flex items-center justify-center">
                 <Building2 className="w-7 h-7 text-primary" />
               </div>
               <div>
@@ -223,16 +216,11 @@ export default function Expenses() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-card rounded-2xl p-6 shadow-md"
-          >
+          <div className="bg-card rounded border p-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-warning/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded bg-warning/10 flex items-center justify-center">
                 <User className="w-7 h-7 text-warning" />
               </div>
               <div>
@@ -242,28 +230,20 @@ export default function Expenses() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Categories Breakdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-card rounded-2xl p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <h3 className="text-lg font-semibold text-foreground mb-6">Expenses by Category</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((category, index) => (
-              <motion.div
+            {categories.map((category) => (
+              <div
                 key={category.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="p-4 rounded-xl border border-border hover:shadow-md transition-shadow"
+                className="p-4 rounded border border-border hover:bg-muted/50 transition-colors"
               >
                 <div 
-                  className="w-10 h-10 rounded-lg mb-3 flex items-center justify-center"
+                  className="w-10 h-10 rounded mb-3 flex items-center justify-center"
                   style={{ backgroundColor: `${category.color}15` }}
                 >
                   <div 
@@ -275,18 +255,13 @@ export default function Expenses() {
                 <p className="text-xl font-bold text-foreground">
                   ${category.amount.toLocaleString()}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Expense List */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-card rounded-2xl p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-lg font-semibold text-foreground">All Expenses</h3>
             <div className="flex items-center gap-3">
@@ -319,12 +294,9 @@ export default function Expenses() {
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((expense, index) => (
-                  <motion.tr
+                {expenses.map((expense) => (
+                  <tr
                     key={expense.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
                     className="border-b border-border/50 hover:bg-muted/50 transition-colors"
                   >
                     <td className="py-4 px-4">
@@ -341,7 +313,7 @@ export default function Expenses() {
                       </div>
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium ${
                         expense.type === "Company" 
                           ? "bg-primary/10 text-primary" 
                           : "bg-warning/10 text-warning"
@@ -351,7 +323,7 @@ export default function Expenses() {
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium ${
                         expense.status === "Approved" 
                           ? "bg-success/10 text-success" 
                           : "bg-warning/10 text-warning"
@@ -360,16 +332,16 @@ export default function Expenses() {
                       </span>
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+                      <button className="p-2 hover:bg-muted rounded transition-colors">
                         <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </MainLayout>
   );

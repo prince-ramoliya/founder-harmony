@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import {
   AreaChart,
   Area,
@@ -20,12 +19,7 @@ const data = [
 
 export function CashFlowChart() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.2 }}
-      className="bg-card rounded-2xl p-6 shadow-md"
-    >
+    <div className="bg-card rounded border p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Cash Flow</h3>
@@ -73,7 +67,7 @@ export function CashFlowChart() {
               content={({ active, payload, label }) => {
                 if (active && payload && payload.length) {
                   return (
-                    <div className="bg-popover border border-border rounded-lg px-4 py-3 shadow-lg">
+                    <div className="bg-popover border border-border rounded px-4 py-3">
                       <p className="font-medium text-foreground mb-2">{label}</p>
                       {payload.map((entry, index) => (
                         <p key={index} className="text-sm" style={{ color: entry.color }}>
@@ -107,6 +101,6 @@ export function CashFlowChart() {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -1,27 +1,42 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { 
   Settings as SettingsIcon, 
   Building2, 
   Bell,
   Shield,
   Palette,
-  Save
+  Save,
+  Trash2,
+  AlertTriangle
 } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Settings() {
+  const navigate = useNavigate();
   const { workspace, refetchWorkspaces } = useWorkspace();
   const { toast } = useToast();
   const [workspaceName, setWorkspaceName] = useState(workspace?.name || "");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   
   // Notification settings (UI only for now)
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -57,41 +72,57 @@ export default function Settings() {
     }
   };
 
+  const handleDeleteAllData = async () => {
+    if (!workspace?.id) return;
+    
+    setDeleting(true);
+    try {
+      // Delete all data in order (respecting foreign keys)
+      await supabase.from("audit_logs").delete().eq("workspace_id", workspace.id);
+      await supabase.from("capital_contributions").delete().eq("workspace_id", workspace.id);
+      await supabase.from("expenses").delete().eq("workspace_id", workspace.id);
+      await supabase.from("revenue").delete().eq("workspace_id", workspace.id);
+      await supabase.from("workspace_invites").delete().eq("workspace_id", workspace.id);
+      await supabase.from("founders").delete().eq("workspace_id", workspace.id);
+      await supabase.from("user_roles").delete().eq("workspace_id", workspace.id);
+      await supabase.from("workspaces").delete().eq("id", workspace.id);
+
+      toast({
+        title: "Data deleted",
+        description: "All workspace data has been permanently deleted.",
+      });
+
+      // Redirect to onboarding
+      navigate("/onboarding");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <MainLayout>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="space-y-8"
-      >
+      <div className="space-y-8">
         {/* Header */}
         <div>
-          <motion.h1
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-3xl font-bold text-foreground flex items-center gap-3"
-          >
-            <div className="w-10 h-10 rounded-[6px] bg-primary/10 flex items-center justify-center">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+            <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
               <SettingsIcon className="w-5 h-5 text-primary" />
             </div>
             Settings
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-muted-foreground mt-2"
-          >
+          </h1>
+          <p className="text-muted-foreground mt-2">
             Manage your workspace and preferences
-          </motion.p>
+          </p>
         </div>
 
         {/* Workspace Settings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-card rounded-[6px] p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <div className="flex items-center gap-3 mb-6">
             <Building2 className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">Workspace Settings</h3>
@@ -126,15 +157,10 @@ export default function Settings() {
               {saving ? "Saving..." : "Save Changes"}
             </Button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Notification Settings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-card rounded-[6px] p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <div className="flex items-center gap-3 mb-6">
             <Bell className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">Notifications</h3>
@@ -172,22 +198,17 @@ export default function Settings() {
               />
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Security Settings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-card rounded-[6px] p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <div className="flex items-center gap-3 mb-6">
             <Shield className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">Security</h3>
           </div>
 
           <div className="space-y-4 max-w-md">
-            <div className="p-4 rounded-[6px] border border-border bg-muted/50">
+            <div className="p-4 rounded border bg-muted/50">
               <p className="font-medium text-foreground mb-1">Audit Log</p>
               <p className="text-sm text-muted-foreground mb-3">
                 All changes to equity, capital, and expenses are automatically logged and immutable.
@@ -196,7 +217,7 @@ export default function Settings() {
                 <a href="/audit-log">View Audit Log</a>
               </Button>
             </div>
-            <div className="p-4 rounded-[6px] border border-border bg-muted/50">
+            <div className="p-4 rounded border bg-muted/50">
               <p className="font-medium text-foreground mb-1">Data Export</p>
               <p className="text-sm text-muted-foreground mb-3">
                 Export all your workspace data in CSV format.
@@ -206,32 +227,83 @@ export default function Settings() {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Theme Settings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-card rounded-[6px] p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <div className="flex items-center gap-3 mb-6">
             <Palette className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">Appearance</h3>
           </div>
 
           <div className="flex gap-4">
-            <button className="flex flex-col items-center gap-2 p-4 rounded-[6px] border-2 border-primary bg-background">
+            <button className="flex flex-col items-center gap-2 p-4 rounded border-2 border-primary bg-background">
               <div className="w-12 h-8 rounded bg-white border border-border" />
               <span className="text-sm font-medium text-foreground">Light</span>
             </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-[6px] border border-border hover:border-primary/50 transition-colors">
+            <button className="flex flex-col items-center gap-2 p-4 rounded border border-border hover:border-primary/50 transition-colors">
               <div className="w-12 h-8 rounded bg-gray-900 border border-gray-700" />
               <span className="text-sm font-medium text-foreground">Dark</span>
             </button>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-card rounded border border-destructive/30 p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Trash2 className="w-5 h-5 text-destructive" />
+            <h3 className="text-lg font-semibold text-destructive">Danger Zone</h3>
+          </div>
+
+          <div className="space-y-4 max-w-md">
+            <div className="p-4 rounded border border-destructive/30 bg-destructive/5">
+              <p className="font-medium text-foreground mb-1">Delete All Data</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                Permanently delete all workspace data including founders, equity, expenses, revenue, 
+                capital contributions, and audit logs. This action cannot be undone.
+              </p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" disabled={deleting}>
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    {deleting ? "Deleting..." : "Delete All Data"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5 text-destructive" />
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete all data in your workspace including:
+                      <ul className="list-disc list-inside mt-2 space-y-1">
+                        <li>All founders and equity allocations</li>
+                        <li>All expenses and revenue records</li>
+                        <li>All capital contributions</li>
+                        <li>All audit logs and history</li>
+                        <li>All team invitations</li>
+                      </ul>
+                      <p className="mt-3 font-medium text-destructive">
+                        This action cannot be undone. You will be redirected to create a new workspace.
+                      </p>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAllData}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Yes, delete everything
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        </div>
+      </div>
     </MainLayout>
   );
 }

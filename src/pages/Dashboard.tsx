@@ -205,12 +205,7 @@ export default function Dashboard() {
         <CashFlowChart />
 
         {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-card rounded-[6px] p-6 shadow-md"
-        >
+        <div className="bg-card rounded border p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
@@ -218,23 +213,18 @@ export default function Dashboard() {
               { label: "Log Revenue", color: "bg-success/10 text-success hover:bg-success/20", href: "/revenue" },
               { label: "Contribute Capital", color: "bg-primary/10 text-primary hover:bg-primary/20", href: "/capital" },
               { label: "Update Equity", color: "bg-accent/10 text-accent hover:bg-accent/20", href: "/equity" },
-            ].map((action, index) => (
-              <motion.a
+            ].map((action) => (
+              <a
                 key={action.label}
                 href={action.href}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`flex items-center justify-between p-4 rounded-[6px] font-medium transition-colors ${action.color}`}
+                className={`flex items-center justify-between p-4 rounded font-medium transition-colors ${action.color}`}
               >
                 {action.label}
                 <ArrowUpRight className="w-4 h-4" />
-              </motion.a>
+              </a>
             ))}
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </MainLayout>
   );
