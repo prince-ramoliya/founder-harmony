@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 interface Founder {
@@ -25,6 +26,7 @@ interface Founder {
 
 export default function ExitSimulator() {
   const { workspace } = useWorkspace();
+  const { currency } = useCurrency();
   const [exitAmount, setExitAmount] = useState(10000000);
   const [founders, setFounders] = useState<Founder[]>([]);
   const [loading, setLoading] = useState(true);

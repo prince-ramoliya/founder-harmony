@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 
 interface Contribution {
@@ -54,6 +55,7 @@ interface FounderTotal {
 
 export default function Capital() {
   const { workspace } = useWorkspace();
+  const { formatAmount, currency } = useCurrency();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [founders, setFounders] = useState<Founder[]>([]);

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -39,6 +40,7 @@ interface DashboardData {
 export default function Dashboard() {
   const { workspace } = useWorkspace();
   const { user } = useAuth();
+  const { formatAmount } = useCurrency();
   const [data, setData] = useState<DashboardData>({
     totalRevenue: 0,
     totalExpenses: 0,
@@ -169,7 +171,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Company Balance"
-            value={`$${balance.toLocaleString()}`}
+            value={formatAmount(balance)}
             change={balance > 0 ? "Positive" : "Negative"}
             changeType={balance > 0 ? "positive" : "negative"}
             icon={DollarSign}
@@ -177,13 +179,13 @@ export default function Dashboard() {
           />
           <StatCard
             title="Total Revenue"
-            value={`$${data.totalRevenue.toLocaleString()}`}
+            value={formatAmount(data.totalRevenue)}
             icon={TrendingUp}
             variant="success"
           />
           <StatCard
             title="Total Expenses"
-            value={`$${data.totalExpenses.toLocaleString()}`}
+            value={formatAmount(data.totalExpenses)}
             icon={TrendingDown}
           />
           <StatCard

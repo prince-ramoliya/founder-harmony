@@ -8,13 +8,21 @@ import {
   Palette,
   Save,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Coins
 } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,12 +35,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useCurrency, CURRENCIES } from "@/contexts/CurrencyContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { workspace, refetchWorkspaces } = useWorkspace();
+  const { currency, setCurrency } = useCurrency();
   const { toast } = useToast();
   const [workspaceName, setWorkspaceName] = useState(workspace?.name || "");
   const [saving, setSaving] = useState(false);
@@ -69,6 +79,17 @@ export default function Settings() {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleCurrencyChange = (code: string) => {
+    const selectedCurrency = CURRENCIES.find(c => c.code === code);
+    if (selectedCurrency) {
+      setCurrency(selectedCurrency);
+      toast({
+        title: "Currency updated",
+        description: `Currency changed to ${selectedCurrency.name} (${selectedCurrency.symbol})`,
+      });
     }
   };
 
@@ -135,6 +156,7 @@ export default function Settings() {
                 value={workspaceName}
                 onChange={(e) => setWorkspaceName(e.target.value)}
                 placeholder="Your Company Name"
+                className="rounded"
               />
             </div>
             <div className="space-y-2">
@@ -142,7 +164,7 @@ export default function Settings() {
               <Input 
                 value={workspace?.id || ""}
                 disabled
-                className="bg-muted text-muted-foreground"
+                className="bg-muted text-muted-foreground rounded"
               />
               <p className="text-xs text-muted-foreground">
                 This is your unique workspace identifier
@@ -151,11 +173,44 @@ export default function Settings() {
             <Button 
               onClick={handleSaveWorkspace}
               disabled={saving}
-              className="gradient-primary"
+              className="gradient-primary rounded"
             >
               <Save className="w-4 h-4 mr-2" />
               {saving ? "Saving..." : "Save Changes"}
             </Button>
+          </div>
+        </div>
+
+        {/* Currency Settings */}
+        <div className="bg-card rounded border p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Coins className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold text-foreground">Currency</h3>
+          </div>
+
+          <div className="space-y-4 max-w-md">
+            <div className="space-y-2">
+              <Label>Display Currency</Label>
+              <Select value={currency.code} onValueChange={handleCurrencyChange}>
+                <SelectTrigger className="rounded">
+                  <SelectValue placeholder="Select currency" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  {CURRENCIES.map((curr) => (
+                    <SelectItem key={curr.code} value={curr.code}>
+                      <span className="flex items-center gap-2">
+                        <span className="font-medium">{curr.symbol}</span>
+                        <span>{curr.name}</span>
+                        <span className="text-muted-foreground">({curr.code})</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                This currency will be used to display all amounts across the application
+              </p>
+            </div>
           </div>
         </div>
 
@@ -213,7 +268,7 @@ export default function Settings() {
               <p className="text-sm text-muted-foreground mb-3">
                 All changes to equity, capital, and expenses are automatically logged and immutable.
               </p>
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" className="rounded" asChild>
                 <a href="/audit-log">View Audit Log</a>
               </Button>
             </div>
@@ -222,7 +277,7 @@ export default function Settings() {
               <p className="text-sm text-muted-foreground mb-3">
                 Export all your workspace data in CSV format.
               </p>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="rounded">
                 Export Data
               </Button>
             </div>
@@ -264,7 +319,7 @@ export default function Settings() {
               </p>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size="sm" disabled={deleting}>
+                  <Button variant="destructive" size="sm" disabled={deleting} className="rounded">
                     <Trash2 className="w-4 h-4 mr-2" />
                     {deleting ? "Deleting..." : "Delete All Data"}
                   </Button>
@@ -290,10 +345,10 @@ export default function Settings() {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="rounded">Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDeleteAllData}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded"
                     >
                       Yes, delete everything
                     </AlertDialogAction>
