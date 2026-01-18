@@ -1,19 +1,73 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
-const data = [
-  { name: "John Doe", value: 40, color: "#4F46E5" },
-  { name: "Jane Smith", value: 35, color: "#10B981" },
-  { name: "Mike Johnson", value: 25, color: "#F59E0B" },
-];
+interface Founder {
+  name: string;
+  value: number;
+  color: string;
+}
 
 export function EquityPieChart() {
+  const { workspace } = useWorkspace();
+  const [data, setData] = useState<Founder[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (workspace?.id) {
+      fetchFounders();
+
+      const channel = supabase
+        .channel('equity_pie_founders')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'founders', filter: `workspace_id=eq.${workspace.id}` }, fetchFounders)
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [workspace?.id]);
+
+  const fetchFounders = async () => {
+    if (!workspace?.id) return;
+
+    try {
+      const { data: founders } = await supabase
+        .from("founders")
+        .select("name, equity_percentage, color")
+        .eq("workspace_id", workspace.id)
+        .order("equity_percentage", { ascending: false });
+
+      if (founders) {
+        setData(founders.map(f => ({
+          name: f.name,
+          value: f.equity_percentage,
+          color: f.color || "#3B82F6",
+        })));
+      }
+    } catch (error) {
+      console.error("Error fetching founders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-card rounded-[6px] p-6 shadow-md flex items-center justify-center h-64">
+        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
-      className="bg-card rounded-2xl p-6 shadow-md"
+      className="bg-card rounded-[6px] p-6 shadow-md"
     >
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -43,7 +97,7 @@ export function EquityPieChart() {
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="bg-popover border border-border rounded-lg px-3 py-2 shadow-lg">
+                      <div className="bg-popover border border-border rounded-[6px] px-3 py-2 shadow-lg">
                         <p className="font-medium text-foreground">{payload[0].name}</p>
                         <p className="text-sm text-muted-foreground">{payload[0].value}%</p>
                       </div>
@@ -63,7 +117,7 @@ export function EquityPieChart() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+              className="flex items-center justify-between p-3 rounded-[6px] bg-muted/50 hover:bg-muted transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div
