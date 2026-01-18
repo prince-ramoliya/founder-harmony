@@ -15,6 +15,8 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import ExitSimulator from "./pages/ExitSimulator";
 import AuditLog from "./pages/AuditLog";
+import Team from "./pages/Team";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +57,8 @@ function AppRoutes() {
       <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
       <Route path="/exit-simulator" element={<ProtectedRoute><ExitSimulator /></ProtectedRoute>} />
       <Route path="/audit-log" element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
+      <Route path="/team" element={<ProtectedRoute><Team /></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
