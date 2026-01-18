@@ -17,13 +17,17 @@ import {
   X,
   Mail,
   CheckCircle2,
-  Rocket
+  Rocket,
+  Copy,
+  Link,
+  Percent
 } from "lucide-react";
 
 const steps = [
   { id: 1, title: "Create Workspace", icon: Building2 },
-  { id: 2, title: "Invite Founders", icon: Users },
-  { id: 3, title: "Ready to Go", icon: Rocket },
+  { id: 2, title: "Your Equity", icon: Percent },
+  { id: 3, title: "Invite Founders", icon: Users },
+  { id: 4, title: "Ready to Go", icon: Rocket },
 ];
 
 interface Invite {
@@ -34,9 +38,12 @@ interface Invite {
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const [workspaceName, setWorkspaceName] = useState("");
+  const [equityPercentage, setEquityPercentage] = useState("100");
   const [invites, setInvites] = useState<Invite[]>([{ email: "", name: "" }]);
   const [loading, setLoading] = useState(false);
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const [inviteLink, setInviteLink] = useState("");
+  const [linkCopied, setLinkCopied] = useState(false);
   
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -74,6 +81,45 @@ export default function Onboarding() {
       const workspace = (Array.isArray(data) ? data[0] : data) as any;
       if (!workspace?.id) throw new Error("Workspace creation failed");
 
+      setWorkspaceId(workspace.id);
+      
+      // Generate invite link
+      const baseUrl = window.location.origin;
+      setInviteLink(`${baseUrl}/auth?invite=${workspace.id}`);
+      
+      setCurrentStep(2);
+
+      toast({
+        title: "Workspace created!",
+        description: `${workspaceName} is ready. Now set your equity.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error creating workspace",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSetEquity = async () => {
+    if (!workspaceId || !user) return;
+
+    const equity = parseFloat(equityPercentage);
+    if (isNaN(equity) || equity < 0 || equity > 100) {
+      toast({
+        title: "Invalid equity percentage",
+        description: "Please enter a value between 0 and 100.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
       // Get user profile
       const { data: profile } = await supabase
         .from("profiles")
@@ -85,12 +131,12 @@ export default function Onboarding() {
       const { error: founderError } = await supabase
         .from("founders")
         .insert({
-          workspace_id: workspace.id,
+          workspace_id: workspaceId,
           user_id: user.id,
           name: profile?.full_name || user.email?.split("@")[0] || "Founder",
           email: user.email,
           role_title: "CEO & Co-founder",
-          equity_percentage: 100,
+          equity_percentage: equity,
           color: "#3B82F6",
         });
 
@@ -98,25 +144,24 @@ export default function Onboarding() {
 
       // Create audit log
       await supabase.from("audit_logs").insert({
-        workspace_id: workspace.id,
+        workspace_id: workspaceId,
         user_id: user.id,
         action: "create",
         entity_type: "workspace",
-        entity_id: workspace.id,
-        new_data: { name: workspaceName },
+        entity_id: workspaceId,
+        new_data: { name: workspaceName, equity_percentage: equity },
         reason: "Workspace created during onboarding",
       });
 
-      setWorkspaceId(workspace.id);
-      setCurrentStep(2);
+      setCurrentStep(3);
 
       toast({
-        title: "Workspace created!",
-        description: `${workspaceName} is ready. Now invite your co-founders.`,
+        title: "Equity set!",
+        description: `Your equity is set to ${equity}%. Now invite your co-founders.`,
       });
     } catch (error: any) {
       toast({
-        title: "Error creating workspace",
+        title: "Error setting equity",
         description: error.message,
         variant: "destructive",
       });
@@ -139,13 +184,31 @@ export default function Onboarding() {
     setInvites(newInvites);
   };
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setLinkCopied(true);
+      toast({
+        title: "Link copied!",
+        description: "Share this link with your co-founders.",
+      });
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch (error) {
+      toast({
+        title: "Failed to copy",
+        description: "Please copy the link manually.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSendInvites = async () => {
     if (!workspaceId) return;
 
     const validInvites = invites.filter(i => i.email.trim() && i.email.includes("@"));
     
     if (validInvites.length === 0) {
-      setCurrentStep(3);
+      setCurrentStep(4);
       return;
     }
 
@@ -187,7 +250,7 @@ export default function Onboarding() {
         description: `${validInvites.length} co-founder(s) have been invited.`,
       });
 
-      setCurrentStep(3);
+      setCurrentStep(4);
     } catch (error: any) {
       toast({
         title: "Error sending invites",
@@ -220,7 +283,7 @@ export default function Onboarding() {
                 animate={{ 
                   scale: currentStep >= step.id ? 1 : 0.8,
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-[6px] transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
                   currentStep >= step.id 
                     ? "bg-primary text-primary-foreground" 
                     : "bg-muted text-muted-foreground"
@@ -230,7 +293,7 @@ export default function Onboarding() {
                 <span className="text-sm font-medium hidden sm:inline">{step.title}</span>
               </motion.div>
               {index < steps.length - 1 && (
-                <div className={`w-12 h-0.5 mx-2 ${
+                <div className={`w-8 h-0.5 mx-2 ${
                   currentStep > step.id ? "bg-primary" : "bg-border"
                 }`} />
               )}
@@ -239,7 +302,7 @@ export default function Onboarding() {
         </div>
 
         {/* Step Content */}
-        <div className="bg-card rounded-[6px] p-8 shadow-lg border border-border">
+        <div className="bg-card rounded p-8 border border-border">
           <AnimatePresence mode="wait">
             {currentStep === 1 && (
               <motion.div
@@ -250,7 +313,7 @@ export default function Onboarding() {
                 className="space-y-6"
               >
                 <div className="text-center">
-                  <div className="w-16 h-16 rounded-[6px] gradient-primary flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded gradient-primary flex items-center justify-center mx-auto mb-4">
                     <Building2 className="w-8 h-8 text-primary-foreground" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -275,7 +338,7 @@ export default function Onboarding() {
                 <Button
                   onClick={handleCreateWorkspace}
                   disabled={loading || !workspaceName.trim()}
-                  className="w-full gradient-primary shadow-glow py-6"
+                  className="w-full gradient-primary py-6"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -301,7 +364,80 @@ export default function Onboarding() {
                 className="space-y-6"
               >
                 <div className="text-center">
-                  <div className="w-16 h-16 rounded-[6px] bg-success/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded bg-warning/10 flex items-center justify-center mx-auto mb-4">
+                    <Percent className="w-8 h-8 text-warning" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    What's your equity stake?
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Enter your current equity percentage in the company.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="equityPercentage">Your Equity Percentage</Label>
+                  <div className="relative">
+                    <Input
+                      id="equityPercentage"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      placeholder="e.g., 50"
+                      value={equityPercentage}
+                      onChange={(e) => setEquityPercentage(e.target.value)}
+                      className="text-lg py-6 pr-12"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">
+                      %
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    You can adjust this later in the Team section.
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentStep(1)}
+                    className="flex-1"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button
+                    onClick={handleSetEquity}
+                    disabled={loading}
+                    className="flex-1 gradient-primary"
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                        Saving...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        Continue
+                        <ArrowRight className="w-4 h-4" />
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {currentStep === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded bg-success/10 flex items-center justify-center mx-auto mb-4">
                     <Users className="w-8 h-8 text-success" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -310,6 +446,44 @@ export default function Onboarding() {
                   <p className="text-muted-foreground">
                     Add your team members to start tracking equity together.
                   </p>
+                </div>
+
+                {/* Invite Link Section */}
+                <div className="bg-muted/50 rounded p-4 space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <Link className="w-4 h-4" />
+                    Share Invite Link
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={inviteLink}
+                      readOnly
+                      className="flex-1 text-sm bg-background"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={handleCopyLink}
+                      className="flex-shrink-0"
+                    >
+                      {linkCopied ? (
+                        <CheckCircle2 className="w-4 h-4 text-success" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Share this link with your partners to invite them to the workspace.
+                  </p>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">Or invite by email</span>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
@@ -339,7 +513,7 @@ export default function Onboarding() {
                       {invites.length > 1 && (
                         <button
                           onClick={() => handleRemoveInvite(index)}
-                          className="p-2 hover:bg-muted rounded-[6px] transition-colors"
+                          className="p-2 hover:bg-muted rounded transition-colors"
                         >
                           <X className="w-4 h-4 text-muted-foreground" />
                         </button>
@@ -359,7 +533,7 @@ export default function Onboarding() {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => setCurrentStep(1)}
+                    onClick={() => setCurrentStep(2)}
                     className="flex-1"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
@@ -386,9 +560,9 @@ export default function Onboarding() {
               </motion.div>
             )}
 
-            {currentStep === 3 && (
+            {currentStep === 4 && (
               <motion.div
-                key="step3"
+                key="step4"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="space-y-6 text-center"
@@ -411,7 +585,7 @@ export default function Onboarding() {
                   </p>
                 </div>
 
-                <div className="bg-muted/50 rounded-[6px] p-6 text-left space-y-3">
+                <div className="bg-muted/50 rounded p-6 text-left space-y-3">
                   <p className="font-medium text-foreground">What's next:</p>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
@@ -435,7 +609,7 @@ export default function Onboarding() {
 
                 <Button
                   onClick={handleFinish}
-                  className="w-full gradient-primary shadow-glow py-6"
+                  className="w-full gradient-primary py-6"
                 >
                   <span className="flex items-center gap-2">
                     Go to Dashboard
