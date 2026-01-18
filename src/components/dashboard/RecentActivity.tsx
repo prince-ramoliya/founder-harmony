@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { 
   Wallet, 
   Receipt, 
@@ -118,19 +117,14 @@ export function RecentActivity() {
 
   if (loading) {
     return (
-      <div className="bg-card rounded-[6px] p-6 shadow-md flex items-center justify-center h-64">
+      <div className="bg-card rounded border p-6 flex items-center justify-center h-64">
         <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
-      className="bg-card rounded-[6px] p-6 shadow-md"
-    >
+    <div className="bg-card rounded border p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
@@ -146,16 +140,13 @@ export function RecentActivity() {
         {activities.length === 0 ? (
           <p className="text-muted-foreground text-center py-4">No recent activity</p>
         ) : (
-          activities.map((activity, index) => (
-            <motion.div
+          activities.map((activity) => (
+            <div
               key={activity.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-start gap-4 p-3 rounded-[6px] hover:bg-muted/50 transition-colors cursor-pointer"
+              className="flex items-start gap-4 p-3 rounded hover:bg-muted/50 transition-colors cursor-pointer"
             >
               <div className={cn(
-                "w-10 h-10 rounded-[6px] flex items-center justify-center flex-shrink-0",
+                "w-10 h-10 rounded flex items-center justify-center flex-shrink-0",
                 activity.color
               )}>
                 <activity.icon className="w-5 h-5" />
@@ -167,10 +158,10 @@ export function RecentActivity() {
               <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {activity.time}
               </span>
-            </motion.div>
+            </div>
           ))
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

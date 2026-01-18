@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -56,19 +55,14 @@ export function EquityPieChart() {
 
   if (loading) {
     return (
-      <div className="bg-card rounded-[6px] p-6 shadow-md flex items-center justify-center h-64">
+      <div className="bg-card rounded border p-6 flex items-center justify-center h-64">
         <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
-      className="bg-card rounded-[6px] p-6 shadow-md"
-    >
+    <div className="bg-card rounded border p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Equity Distribution</h3>
@@ -97,7 +91,7 @@ export function EquityPieChart() {
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="bg-popover border border-border rounded-[6px] px-3 py-2 shadow-lg">
+                      <div className="bg-popover border border-border rounded px-3 py-2">
                         <p className="font-medium text-foreground">{payload[0].name}</p>
                         <p className="text-sm text-muted-foreground">{payload[0].value}%</p>
                       </div>
@@ -111,13 +105,10 @@ export function EquityPieChart() {
         </div>
 
         <div className="flex-1 space-y-3">
-          {data.map((founder, index) => (
-            <motion.div
+          {data.map((founder) => (
+            <div
               key={founder.name}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between p-3 rounded-[6px] bg-muted/50 hover:bg-muted transition-colors"
+              className="flex items-center justify-between p-3 rounded bg-muted/50 hover:bg-muted transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div
@@ -127,10 +118,10 @@ export function EquityPieChart() {
                 <span className="font-medium text-foreground">{founder.name}</span>
               </div>
               <span className="text-lg font-semibold text-foreground">{founder.value}%</span>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -181,7 +181,7 @@ export default function Equity() {
               animate={{ opacity: 1, y: 0 }}
               className="text-3xl font-bold text-foreground flex items-center gap-3"
             >
-              <div className="w-10 h-10 rounded-[6px] bg-primary/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                 <PieChart className="w-5 h-5 text-primary" />
               </div>
               Equity Management
@@ -264,7 +264,7 @@ export default function Equity() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="lg:col-span-1 bg-card rounded-[6px] p-6 shadow-md"
+                className="lg:col-span-1 bg-card rounded border p-6"
               >
                 <h3 className="text-lg font-semibold text-foreground mb-4">Ownership Split</h3>
                 <div className="h-64">
@@ -287,7 +287,7 @@ export default function Equity() {
                         content={({ active, payload }) => {
                           if (active && payload && payload.length) {
                             return (
-                              <div className="bg-popover border border-border rounded-[6px] px-3 py-2 shadow-lg">
+                              <div className="bg-popover border border-border rounded px-3 py-2">
                                 <p className="font-medium text-foreground">{payload[0].name}</p>
                                 <p className="text-sm text-muted-foreground">{payload[0].value}%</p>
                               </div>
@@ -310,7 +310,7 @@ export default function Equity() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="lg:col-span-2 bg-card rounded-[6px] p-6 shadow-md"
+                className="lg:col-span-2 bg-card rounded border p-6"
               >
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-foreground">Cap Table</h3>
@@ -361,7 +361,7 @@ export default function Equity() {
                             ${(founder.equity_percentage * 1000).toLocaleString()}
                           </td>
                           <td className="py-4 px-4 text-right">
-                            <button className="p-2 hover:bg-muted rounded-[6px] transition-colors">
+                            <button className="p-2 hover:bg-muted rounded transition-colors">
                               <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
                             </button>
                           </td>
@@ -378,11 +378,11 @@ export default function Equity() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-card rounded-[6px] p-6 shadow-md"
+              className="bg-card rounded border p-6"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[6px] bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <History className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -402,7 +402,7 @@ export default function Equity() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-4 p-4 rounded-[6px] border border-border hover:bg-muted/30 transition-colors"
+                      className="flex items-start gap-4 p-4 rounded border border-border hover:bg-muted/30 transition-colors"
                     >
                       <div className="w-2 h-2 rounded-full bg-primary mt-2" />
                       <div className="flex-1">

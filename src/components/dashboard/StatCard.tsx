@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,16 +19,12 @@ export function StatCard({
   variant = "default",
 }: StatCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -2 }}
+    <div
       className={cn(
-        "relative overflow-hidden rounded-2xl p-6 transition-shadow duration-300",
-        variant === "default" && "bg-card shadow-md hover:shadow-lg",
-        variant === "primary" && "gradient-primary text-primary-foreground shadow-lg shadow-primary/20",
-        variant === "success" && "gradient-success text-success-foreground shadow-lg shadow-success/20"
+        "relative overflow-hidden rounded border p-6",
+        variant === "default" && "bg-card",
+        variant === "primary" && "gradient-primary text-primary-foreground",
+        variant === "success" && "gradient-success text-success-foreground"
       )}
     >
       {/* Background decoration */}
@@ -40,7 +35,7 @@ export function StatCard({
       <div className="relative">
         <div className="flex items-center justify-between mb-4">
           <div className={cn(
-            "w-12 h-12 rounded-xl flex items-center justify-center",
+            "w-12 h-12 rounded flex items-center justify-center",
             variant === "default" ? "bg-primary/10" : "bg-white/20"
           )}>
             <Icon className={cn(
@@ -50,7 +45,7 @@ export function StatCard({
           </div>
           {change && (
             <span className={cn(
-              "text-sm font-medium px-2 py-1 rounded-full",
+              "text-sm font-medium px-2 py-1 rounded",
               variant === "default" && changeType === "positive" && "bg-success/10 text-success",
               variant === "default" && changeType === "negative" && "bg-destructive/10 text-destructive",
               variant === "default" && changeType === "neutral" && "bg-muted text-muted-foreground",
@@ -74,6 +69,6 @@ export function StatCard({
           {value}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }

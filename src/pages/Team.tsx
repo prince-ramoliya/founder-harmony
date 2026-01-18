@@ -140,7 +140,7 @@ export default function Team() {
               animate={{ opacity: 1, y: 0 }}
               className="text-3xl font-bold text-foreground flex items-center gap-3"
             >
-              <div className="w-10 h-10 rounded-[6px] bg-primary/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                 <Users className="w-5 h-5 text-primary" />
               </div>
               Team Management
@@ -181,7 +181,7 @@ export default function Team() {
                 <div className="space-y-2">
                   <Label>Role</Label>
                   <select 
-                    className="w-full px-3 py-2 rounded-[6px] border border-input bg-background text-foreground"
+                    className="w-full px-3 py-2 rounded border border-input bg-background text-foreground"
                     value={inviteRole}
                     onChange={(e) => setInviteRole(e.target.value as any)}
                   >
@@ -206,7 +206,7 @@ export default function Team() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-card rounded-[6px] p-6 shadow-md"
+          className="bg-card rounded border p-6"
         >
           <div className="flex items-center gap-3 mb-6">
             <Crown className="w-5 h-5 text-primary" />
@@ -225,7 +225,7 @@ export default function Team() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="flex items-center gap-4 p-4 rounded-[6px] border border-border hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-4 p-4 rounded border border-border hover:bg-muted/50 transition-colors"
                 >
                   <div 
                     className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium"
@@ -253,7 +253,7 @@ export default function Team() {
                       )}
                     </div>
                   </div>
-                  <button className="p-2 hover:bg-muted rounded-[6px] transition-colors">
+                  <button className="p-2 hover:bg-muted rounded transition-colors">
                     <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </motion.div>
@@ -268,7 +268,7 @@ export default function Team() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-card rounded-[6px] p-6 shadow-md"
+            className="bg-card rounded border p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Clock className="w-5 h-5 text-warning" />
@@ -282,7 +282,7 @@ export default function Team() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="flex items-center gap-4 p-4 rounded-[6px] border border-border border-dashed"
+                  className="flex items-center gap-4 p-4 rounded border border-border border-dashed"
                 >
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
                     <Mail className="w-5 h-5 text-muted-foreground" />
