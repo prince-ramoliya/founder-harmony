@@ -149,7 +149,7 @@ export default function AuditLog() {
               animate={{ opacity: 1, y: 0 }}
               className="text-3xl font-bold text-foreground flex items-center gap-3"
             >
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                 <History className="w-5 h-5 text-primary" />
               </div>
               Audit Log
@@ -183,9 +183,9 @@ export default function AuditLog() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-start gap-3"
+          className="bg-primary/5 border border-primary/20 rounded p-4 flex items-start gap-3"
         >
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
             <FileText className="w-5 h-5 text-primary" />
           </div>
           <div>
@@ -202,13 +202,13 @@ export default function AuditLog() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-card rounded-2xl shadow-md overflow-hidden"
+          className="bg-card rounded border border-border overflow-hidden"
         >
           {loading ? (
             <div className="p-8 space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="animate-pulse flex items-center gap-4">
-                  <div className="w-10 h-10 bg-muted rounded-lg" />
+                  <div className="w-10 h-10 bg-muted rounded" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 bg-muted rounded w-1/3" />
                     <div className="h-3 bg-muted rounded w-1/2" />
@@ -239,7 +239,7 @@ export default function AuditLog() {
                     className="p-4 hover:bg-muted/50 transition-colors cursor-pointer"
                   >
                     <div className="flex items-start gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorClass}`}>
+                      <div className={`w-10 h-10 rounded flex items-center justify-center ${colorClass}`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       
@@ -282,7 +282,7 @@ export default function AuditLog() {
                         className="mt-4 ml-14 space-y-3"
                       >
                         {log.old_data && (
-                          <div className="p-3 bg-destructive/5 rounded-lg">
+                          <div className="p-3 bg-destructive/5 rounded">
                             <p className="text-xs font-medium text-destructive mb-1">Previous Data</p>
                             <pre className="text-xs text-muted-foreground overflow-auto">
                               {JSON.stringify(log.old_data, null, 2)}
@@ -290,7 +290,7 @@ export default function AuditLog() {
                           </div>
                         )}
                         {log.new_data && (
-                          <div className="p-3 bg-success/5 rounded-lg">
+                          <div className="p-3 bg-success/5 rounded">
                             <p className="text-xs font-medium text-success mb-1">New Data</p>
                             <pre className="text-xs text-muted-foreground overflow-auto">
                               {JSON.stringify(log.new_data, null, 2)}
