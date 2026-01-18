@@ -386,6 +386,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_workspace: {
+        Args: { _name: string }
+        Returns: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "workspaces"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_workspace_access: {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
