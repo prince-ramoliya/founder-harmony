@@ -16,29 +16,29 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-
       // Force a single React instance across all dependencies
       react: path.resolve(__dirname, "node_modules/react"),
       "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
-      "react/jsx-runtime": path.resolve(
-        __dirname,
-        "node_modules/react/jsx-runtime"
-      ),
-      "react/jsx-dev-runtime": path.resolve(
-        __dirname,
-        "node_modules/react/jsx-dev-runtime"
-      ),
+      "react-dom/client": path.resolve(__dirname, "node_modules/react-dom/client"),
+      "react/jsx-runtime": path.resolve(__dirname, "node_modules/react/jsx-runtime"),
+      "react/jsx-dev-runtime": path.resolve(__dirname, "node_modules/react/jsx-dev-runtime"),
     },
-
-    // Extra guard against duplicate React copies in dep graph
-    dedupe: ["react", "react-dom"],
+    dedupe: [
+      "react",
+      "react-dom",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-primitive",
+      "@radix-ui/react-context",
+    ],
   },
   optimizeDeps: {
     include: [
       "react",
       "react-dom",
+      "react-dom/client",
       "react/jsx-runtime",
       "react/jsx-dev-runtime",
     ],
+    force: true, // Force re-optimization to clear cache
   },
 }));
