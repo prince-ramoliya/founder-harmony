@@ -231,7 +231,7 @@ export default function Onboarding() {
                 animate={{ 
                   scale: currentStep >= step.id ? 1 : 0.8,
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-[6px] transition-colors ${
                   currentStep >= step.id 
                     ? "bg-primary text-primary-foreground" 
                     : "bg-muted text-muted-foreground"
@@ -250,7 +250,7 @@ export default function Onboarding() {
         </div>
 
         {/* Step Content */}
-        <div className="bg-card rounded-2xl p-8 shadow-lg">
+        <div className="bg-card rounded-[6px] p-8 shadow-lg border border-border">
           <AnimatePresence mode="wait">
             {currentStep === 1 && (
               <motion.div
@@ -261,8 +261,8 @@ export default function Onboarding() {
                 className="space-y-6"
               >
                 <div className="text-center">
-                  <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-4">
-                    <Building2 className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 rounded-[6px] gradient-primary flex items-center justify-center mx-auto mb-4">
+                    <Building2 className="w-8 h-8 text-primary-foreground" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">
                     Create your workspace
@@ -290,7 +290,7 @@ export default function Onboarding() {
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                       Creating...
                     </span>
                   ) : (
@@ -312,7 +312,7 @@ export default function Onboarding() {
                 className="space-y-6"
               >
                 <div className="text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-[6px] bg-success/10 flex items-center justify-center mx-auto mb-4">
                     <Users className="w-8 h-8 text-success" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -350,7 +350,7 @@ export default function Onboarding() {
                       {invites.length > 1 && (
                         <button
                           onClick={() => handleRemoveInvite(index)}
-                          className="p-2 hover:bg-muted rounded-lg transition-colors"
+                          className="p-2 hover:bg-muted rounded-[6px] transition-colors"
                         >
                           <X className="w-4 h-4 text-muted-foreground" />
                         </button>
@@ -383,7 +383,7 @@ export default function Onboarding() {
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                         Sending...
                       </span>
                     ) : (
@@ -422,7 +422,7 @@ export default function Onboarding() {
                   </p>
                 </div>
 
-                <div className="bg-muted/50 rounded-xl p-6 text-left space-y-3">
+                <div className="bg-muted/50 rounded-[6px] p-6 text-left space-y-3">
                   <p className="font-medium text-foreground">What's next:</p>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
