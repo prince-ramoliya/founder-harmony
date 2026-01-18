@@ -5,7 +5,6 @@ import {
   DollarSign, 
   TrendingUp,
   Download,
-  ArrowUpRight,
   Sparkles
 } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -99,7 +98,7 @@ export default function ExitSimulator() {
               animate={{ opacity: 1, y: 0 }}
               className="text-3xl font-bold text-foreground flex items-center gap-3"
             >
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded gradient-primary flex items-center justify-center">
                 <Calculator className="w-5 h-5 text-white" />
               </div>
               Exit Simulator
@@ -123,7 +122,7 @@ export default function ExitSimulator() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-card rounded-2xl p-8 shadow-lg gradient-primary relative overflow-hidden"
+          className="bg-card rounded p-8 border border-border gradient-primary relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/2" />
           
@@ -140,7 +139,7 @@ export default function ExitSimulator() {
                   type="number"
                   value={exitAmount}
                   onChange={(e) => setExitAmount(Number(e.target.value))}
-                  className="text-4xl font-bold h-20 pl-14 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                  className="text-4xl font-bold h-20 pl-14 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded"
                 />
               </div>
 
@@ -151,7 +150,7 @@ export default function ExitSimulator() {
                     <button
                       key={preset.label}
                       onClick={() => setExitAmount(preset.value)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      className={`px-4 py-2 rounded font-medium transition-all ${
                         exitAmount === preset.value
                           ? "bg-white text-primary"
                           : "bg-white/10 text-white hover:bg-white/20"
@@ -188,52 +187,63 @@ export default function ExitSimulator() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-card rounded-2xl p-6 shadow-md"
+            className="bg-card rounded p-6 border border-border"
           >
             <h3 className="text-lg font-semibold text-foreground mb-6">Payout Distribution</h3>
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={payouts}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={3}
-                    dataKey="payout"
-                    nameKey="name"
-                  >
-                    {payouts.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const data = payload[0].payload;
-                        return (
-                          <div className="bg-popover border border-border rounded-lg px-4 py-3 shadow-lg">
-                            <p className="font-medium text-foreground">{data.name}</p>
-                            <p className="text-lg font-bold text-foreground">
-                              {formatCurrency(data.payout)}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {data.equity_percentage}% equity
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="text-center mt-4">
-              <p className="text-sm text-muted-foreground">Total Exit Value</p>
-              <p className="text-3xl font-bold text-foreground">{formatCurrency(exitAmount)}</p>
-            </div>
+            {founders.length === 0 ? (
+              <div className="h-72 flex items-center justify-center text-muted-foreground">
+                <div className="text-center">
+                  <Calculator className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>Add founders to see payout distribution.</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={payouts}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={100}
+                        paddingAngle={3}
+                        dataKey="payout"
+                        nameKey="name"
+                      >
+                        {payouts.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0].payload;
+                            return (
+                              <div className="bg-popover border border-border rounded px-4 py-3 shadow-lg">
+                                <p className="font-medium text-foreground">{data.name}</p>
+                                <p className="text-lg font-bold text-foreground">
+                                  {formatCurrency(data.payout)}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {data.equity_percentage}% equity
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="text-center mt-4">
+                  <p className="text-sm text-muted-foreground">Total Exit Value</p>
+                  <p className="text-3xl font-bold text-foreground">{formatCurrency(exitAmount)}</p>
+                </div>
+              </>
+            )}
           </motion.div>
 
           {/* Founder Payouts */}
@@ -241,7 +251,7 @@ export default function ExitSimulator() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-card rounded-2xl p-6 shadow-md"
+            className="bg-card rounded p-6 border border-border"
           >
             <h3 className="text-lg font-semibold text-foreground mb-6">Founder Payouts</h3>
             
@@ -249,7 +259,7 @@ export default function ExitSimulator() {
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="h-20 bg-muted rounded-xl" />
+                    <div className="h-20 bg-muted rounded" />
                   </div>
                 ))}
               </div>
@@ -266,7 +276,7 @@ export default function ExitSimulator() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center justify-between p-4 rounded-xl border border-border hover:bg-muted/50 transition-colors"
+                    className="flex items-center justify-between p-4 rounded border border-border hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-4">
                       <div
@@ -299,60 +309,62 @@ export default function ExitSimulator() {
         </div>
 
         {/* Scenario Comparison */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-card rounded-2xl p-6 shadow-md"
-        >
-          <h3 className="text-lg font-semibold text-foreground mb-6">Scenario Comparison</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Founder</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Equity</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$1M Exit</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$10M Exit</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$50M Exit</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$100M Exit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {founders.map((founder) => (
-                  <tr key={founder.id} className="border-b border-border/50">
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                          style={{ backgroundColor: `${founder.color}20`, color: founder.color }}
-                        >
-                          {founder.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                        </div>
-                        <span className="font-medium text-foreground">{founder.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-right text-muted-foreground">
-                      {founder.equity_percentage}%
-                    </td>
-                    <td className="py-4 px-4 text-right font-medium text-foreground">
-                      {formatCurrency((1000000 * founder.equity_percentage) / 100)}
-                    </td>
-                    <td className="py-4 px-4 text-right font-medium text-foreground">
-                      {formatCurrency((10000000 * founder.equity_percentage) / 100)}
-                    </td>
-                    <td className="py-4 px-4 text-right font-medium text-foreground">
-                      {formatCurrency((50000000 * founder.equity_percentage) / 100)}
-                    </td>
-                    <td className="py-4 px-4 text-right font-medium text-success">
-                      {formatCurrency((100000000 * founder.equity_percentage) / 100)}
-                    </td>
+        {founders.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-card rounded p-6 border border-border"
+          >
+            <h3 className="text-lg font-semibold text-foreground mb-6">Scenario Comparison</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Founder</th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Equity</th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$1M Exit</th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$10M Exit</th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$50M Exit</th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">$100M Exit</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
+                </thead>
+                <tbody>
+                  {founders.map((founder) => (
+                    <tr key={founder.id} className="border-b border-border/50">
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                            style={{ backgroundColor: `${founder.color}20`, color: founder.color }}
+                          >
+                            {founder.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                          </div>
+                          <span className="font-medium text-foreground">{founder.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-right text-muted-foreground">
+                        {founder.equity_percentage}%
+                      </td>
+                      <td className="py-4 px-4 text-right font-medium text-foreground">
+                        {formatCurrency((1000000 * founder.equity_percentage) / 100)}
+                      </td>
+                      <td className="py-4 px-4 text-right font-medium text-foreground">
+                        {formatCurrency((10000000 * founder.equity_percentage) / 100)}
+                      </td>
+                      <td className="py-4 px-4 text-right font-medium text-foreground">
+                        {formatCurrency((50000000 * founder.equity_percentage) / 100)}
+                      </td>
+                      <td className="py-4 px-4 text-right font-medium text-success">
+                        {formatCurrency((100000000 * founder.equity_percentage) / 100)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        )}
       </motion.div>
     </MainLayout>
   );
