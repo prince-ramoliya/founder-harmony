@@ -65,25 +65,14 @@ export default function Onboarding() {
     setLoading(true);
 
     try {
-      // Create workspace
-      const { data: workspace, error: workspaceError } = await supabase
-        .from("workspaces")
-        .insert({ name: workspaceName })
-        .select()
-        .single();
+      // Create workspace + assign current user as admin (server-side)
+      const { data, error: workspaceError } = await supabase
+        .rpc("create_workspace", { _name: workspaceName });
 
       if (workspaceError) throw workspaceError;
 
-      // Add current user as admin
-      const { error: roleError } = await supabase
-        .from("user_roles")
-        .insert({
-          user_id: user.id,
-          workspace_id: workspace.id,
-          role: "admin",
-        });
-
-      if (roleError) throw roleError;
+      const workspace = (Array.isArray(data) ? data[0] : data) as any;
+      if (!workspace?.id) throw new Error("Workspace creation failed");
 
       // Get user profile
       const { data: profile } = await supabase
@@ -102,7 +91,7 @@ export default function Onboarding() {
           email: user.email,
           role_title: "CEO & Co-founder",
           equity_percentage: 100,
-          color: "#4F46E5",
+          color: "#3B82F6",
         });
 
       if (founderError) throw founderError;
