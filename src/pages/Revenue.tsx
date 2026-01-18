@@ -32,6 +32,7 @@ import {
 } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 
 interface RevenueEntry {
@@ -45,6 +46,7 @@ interface RevenueEntry {
 
 export default function Revenue() {
   const { workspace } = useWorkspace();
+  const { formatAmount, currency } = useCurrency();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [revenueEntries, setRevenueEntries] = useState<RevenueEntry[]>([]);
   const [loading, setLoading] = useState(true);

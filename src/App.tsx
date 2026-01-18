@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { WorkspaceProvider, useWorkspace } from "@/contexts/WorkspaceContext";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import Dashboard from "./pages/Dashboard";
 import Equity from "./pages/Equity";
 import Capital from "./pages/Capital";
@@ -67,15 +68,17 @@ function AppRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <WorkspaceProvider>
-            <AppRoutes />
-          </WorkspaceProvider>
-        </AuthProvider>
-      </BrowserRouter>
+      <CurrencyProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <WorkspaceProvider>
+              <AppRoutes />
+            </WorkspaceProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </CurrencyProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
